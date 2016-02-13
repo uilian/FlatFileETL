@@ -11,20 +11,31 @@ import java.util.Properties;
 
 
 public class FileProcessor {
-    private static final Properties props = FileProcessor.loadConfig();
+
+    private static Properties props;
 
     public static void main(String... aArgs) throws IOException, InterruptedException {
+        Utils log = new Utils();
+
+        String fSep = "ç";
+        String iSep = ",";
+        String iDataSep ="-";
+
+        try {
+            props = FileProcessor.loadConfig();
+            fSep = (String) props.get("fieldSeparator");
+            iSep = (String) props.get("itemSeparator");
+            iDataSep = (String) props.get("itemDataSeparator");
+        } catch (Exception e){
+            log.log(e.getMessage());
+        }
         //String inPath = (String) props.get("dir.input");
         //String outPath = (String) props.get("dir.output");
         String outPath = System.getProperty("user.home")+"/data/out";
         String inPath = System.getProperty("user.home")+"/data/in";
         String donePath = System.getProperty("user.home")+"/data/done";
-        String fSep = (String) props.get("fieldSeparator");
-        String iSep = (String) props.get("itemSeparator");
-        String iDataSep = (String) props.get("itemDataSeparator");
 
-        Utils log = new Utils();
-
+        log.log(" Processing ... ");
         while(true){
             try {
                 FileETLManager parser = new FileETLManager(fSep,iSep,iDataSep);
@@ -52,18 +63,11 @@ public class FileProcessor {
         Files.move(Paths.get(origin+"/"+fileName), Paths.get(target+"/"+fileName));
     }
 
-    private static Properties loadConfig(){
+    private static Properties loadConfig() throws IOException {
         Properties props = new Properties();
-        InputStream in = null;
-        try {
-            in = new FileInputStream("resources/config.properties");
-            props.load(in);
-            in.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        InputStream in = new FileInputStream("resources/config.properties");
+        props.load(in);
+        in.close();
         return props;
     }
 }
