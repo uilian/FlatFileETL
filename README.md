@@ -21,7 +21,8 @@ Building and Testing
 
 Use
 -------------------------
-
-java -jar <GENERATED_JAR_FILE>
+```
+$ java -jar <GENERATED_JAR_FILE>
+```
 
 
